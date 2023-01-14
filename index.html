@@ -1,0 +1,3138 @@
+
+<html>
+
+
+
+<head>
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+    <style>
+
+        * {
+
+            box-sizing: border-box;
+
+        }
+
+
+
+        body {
+
+            font: 16px Arial;
+
+        }
+
+
+
+        .myautocomplete {
+
+            /*the container must be positioned relative:*/
+
+            position: relative;
+
+            display: inline-block;
+
+        }
+
+
+
+        input {
+
+            border: 1px solid transparent;
+
+            background-color: #f1f1f1;
+
+            padding: 10px;
+
+            font-size: 16px;
+
+        }
+
+
+
+        input[type=text] {
+
+            background-color: #f1f1f1;
+
+            width: 100%;
+
+        }
+
+
+
+        input[type=submit] {
+
+            background-color: DodgerBlue;
+
+            color: #fff;
+
+        }
+
+
+
+        .myautocomplete-items {
+
+            position: absolute;
+
+            border: 1px solid #d4d4d4;
+
+            border-bottom: none;
+
+            border-top: none;
+
+            z-index: 99;
+
+            /*position the myautocomplete items to be the same width as the container:*/
+
+            top: 100%;
+
+            left: 0;
+
+            right: 0;
+
+        }
+
+
+
+        .myautocomplete-items div {
+
+            padding: 10px;
+
+            cursor: pointer;
+
+            background-color: #fff;
+
+            border-bottom: 1px solid #d4d4d4;
+
+        }
+
+
+
+        .myautocomplete-items div:hover {
+
+            /*when hovering an item:*/
+
+            background-color: #e9e9e9;
+
+        }
+
+
+
+        .myautocomplete-active {
+
+            /*when navigating through the items using the arrow keys:*/
+
+            background-color: DodgerBlue !important;
+
+            color: #ffffff;
+
+        }
+
+    </style>
+
+    <!-- <link rel="stylesheet"
+
+        href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css"> -->
+
+
+
+</head>
+
+
+
+<body>
+
+    <div align="center">
+
+        <div>
+
+            <form autocomplete="off" onsubmit="return false">
+
+                <div class="myautocomplete" style="width:300px;">
+
+                    <input id="synonym" type="text" name="xsynonym" placeholder="Synonym Antonym">
+
+                </div>
+
+                <div class="myautocomplete" style="width:300px;">
+
+                    <input id="idioms" type="text" name="xidioms" placeholder="Idioms Phrases">
+
+                </div>
+
+                <div class="myautocomplete" style="width:300px;">
+
+                    <input id="homo" type="text" name="xhomo" placeholder="Homonyms Homophones">
+
+                </div>
+
+                <div class="myautocomplete" style="width:300px;">
+
+                    <input id="word" type="text" name="xword" placeholder="One Word">
+
+                </div>
+
+                <div class="myautocomplete" style="width:300px;">
+
+                    <input id="rootw" type="text" name="xroot" placeholder="RootWord Meaning Example">
+
+                </div>
+
+                <button onclick="clearResult()">CLEAR</button>
+
+                <br><br><br><br>
+
+                <div id="result" align="center">
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+
+
+        var e, t; e = this, t = function () { "use strict"; function e(e, t) { var n = Object.keys(e); if (Object.getOwnPropertySymbols) { var r = Object.getOwnPropertySymbols(e); t && (r = r.filter((function (t) { return Object.getOwnPropertyDescriptor(e, t).enumerable }))), n.push.apply(n, r) } return n } function t(t) { for (var n = 1; n < arguments.length; n++) { var i = null != arguments[n] ? arguments[n] : {}; n % 2 ? e(Object(i), !0).forEach((function (e) { r(t, e, i[e]) })) : Object.getOwnPropertyDescriptors ? Object.defineProperties(t, Object.getOwnPropertyDescriptors(i)) : e(Object(i)).forEach((function (e) { Object.defineProperty(t, e, Object.getOwnPropertyDescriptor(i, e)) })) } return t } function n(e) { return n = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (e) { return typeof e } : function (e) { return e && "function" == typeof Symbol && e.constructor === Symbol && e !== Symbol.prototype ? "symbol" : typeof e }, n(e) } function r(e, t, n) { return t in e ? Object.defineProperty(e, t, { value: n, enumerable: !0, configurable: !0, writable: !0 }) : e[t] = n, e } function i(e) { return function (e) { if (Array.isArray(e)) return s(e) }(e) || function (e) { if ("undefined" != typeof Symbol && null != e[Symbol.iterator] || null != e["@@iterator"]) return Array.from(e) }(e) || o(e) || function () { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.") }() } function o(e, t) { if (e) { if ("string" == typeof e) return s(e, t); var n = Object.prototype.toString.call(e).slice(8, -1); return "Object" === n && e.constructor && (n = e.constructor.name), "Map" === n || "Set" === n ? Array.from(e) : "Arguments" === n || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n) ? s(e, t) : void 0 } } function s(e, t) { (null == t || t > e.length) && (t = e.length); for (var n = 0, r = new Array(t); n < t; n++)r[n] = e[n]; return r } var u = function (e) { return "string" == typeof e ? document.querySelector(e) : e() }, a = function (e, t) { var n = "string" == typeof e ? document.createElement(e) : e; for (var r in t) { var i = t[r]; if ("inside" === r) i.append(n); else if ("dest" === r) u(i[0]).insertAdjacentElement(i[1], n); else if ("around" === r) { var o = i; o.parentNode.insertBefore(n, o), n.append(o), null != o.getAttribute("autofocus") && o.focus() } else r in n ? n[r] = i : n.setAttribute(r, i) } return n }, c = function (e, t) { return e = String(e).toLowerCase(), t ? e.normalize("NFD").replace(/[\u0300-\u036f]/g, "").normalize("NFC") : e }, l = function (e, n) { return a("mark", t({ innerHTML: e }, "string" == typeof n && { class: n })).outerHTML }, f = function (e, t) { t.input.dispatchEvent(new CustomEvent(e, { bubbles: !0, detail: t.feedback, cancelable: !0 })) }, p = function (e, t, n) { var r = n || {}, i = r.mode, o = r.diacritics, s = r.highlight, u = c(t, o); if (t = String(t), e = c(e, o), "loose" === i) { var a = (e = e.replace(/ /g, "")).length, f = 0, p = Array.from(t).map((function (t, n) { return f < a && u[n] === e[f] && (t = s ? l(t, s) : t, f++), t })).join(""); if (f === a) return p } else { var d = u.indexOf(e); if (~d) return e = t.substring(d, d + e.length), d = s ? t.replace(e, l(e, s)) : t } }, d = function (e, t) { return new Promise((function (n, r) { var i; return (i = e.data).cache && i.store ? n() : new Promise((function (e, n) { return "function" == typeof i.src ? i.src(t).then(e, n) : e(i.src) })).then((function (t) { try { return e.feedback = i.store = t, f("response", e), n() } catch (e) { return r(e) } }), r) })) }, h = function (e, t) { var n = t.data, r = t.searchEngine, i = []; n.store.forEach((function (s, u) { var a = function (n) { var o = n ? s[n] : s, u = "function" == typeof r ? r(e, o) : p(e, o, { mode: r, diacritics: t.diacritics, highlight: t.resultItem.highlight }); if (u) { var a = { match: u, value: s }; n && (a.key = n), i.push(a) } }; if (n.keys) { var c, l = function (e, t) { var n = "undefined" != typeof Symbol && e[Symbol.iterator] || e["@@iterator"]; if (!n) { if (Array.isArray(e) || (n = o(e)) || t && e && "number" == typeof e.length) { n && (e = n); var r = 0, i = function () { }; return { s: i, n: function () { return r >= e.length ? { done: !0 } : { done: !1, value: e[r++] } }, e: function (e) { throw e }, f: i } } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.") } var s, u = !0, a = !1; return { s: function () { n = n.call(e) }, n: function () { var e = n.next(); return u = e.done, e }, e: function (e) { a = !0, s = e }, f: function () { try { u || null == n.return || n.return() } finally { if (a) throw s } } } }(n.keys); try { for (l.s(); !(c = l.n()).done;)a(c.value) } catch (e) { l.e(e) } finally { l.f() } } else a() })), n.filter && (i = n.filter(i)); var s = i.slice(0, t.resultsList.maxResults); t.feedback = { query: e, matches: i, results: s }, f("results", t) }, m = "aria-expanded", b = "aria-activedescendant", y = "aria-selected", v = function (e, n) { e.feedback.selection = t({ index: n }, e.feedback.results[n]) }, g = function (e) { e.isOpen || ((e.wrapper || e.input).setAttribute(m, !0), e.list.removeAttribute("hidden"), e.isOpen = !0, f("open", e)) }, w = function (e) { e.isOpen && ((e.wrapper || e.input).setAttribute(m, !1), e.input.setAttribute(b, ""), e.list.setAttribute("hidden", ""), e.isOpen = !1, f("close", e)) }, O = function (e, t) { var n = t.resultItem, r = t.list.getElementsByTagName(n.tag), o = !!n.selected && n.selected.split(" "); if (t.isOpen && r.length) { var s, u, a = t.cursor; e >= r.length && (e = 0), e < 0 && (e = r.length - 1), t.cursor = e, a > -1 && (r[a].removeAttribute(y), o && (u = r[a].classList).remove.apply(u, i(o))), r[e].setAttribute(y, !0), o && (s = r[e].classList).add.apply(s, i(o)), t.input.setAttribute(b, r[t.cursor].id), t.list.scrollTop = r[e].offsetTop - t.list.clientHeight + r[e].clientHeight + 5, t.feedback.cursor = t.cursor, v(t, e), f("navigate", t) } }, A = function (e) { O(e.cursor + 1, e) }, k = function (e) { O(e.cursor - 1, e) }, L = function (e, t, n) { (n = n >= 0 ? n : e.cursor) < 0 || (e.feedback.event = t, v(e, n), f("selection", e), w(e)) }; function j(e, n) { var r = this; return new Promise((function (i, o) { var s, u; return s = n || ((u = e.input) instanceof HTMLInputElement || u instanceof HTMLTextAreaElement ? u.value : u.innerHTML), function (e, t, n) { return t ? t(e) : e.length >= n }(s = e.query ? e.query(s) : s, e.trigger, e.threshold) ? d(e, s).then((function (n) { try { return e.feedback instanceof Error ? i() : (h(s, e), e.resultsList && function (e) { var n = e.resultsList, r = e.list, i = e.resultItem, o = e.feedback, s = o.matches, u = o.results; if (e.cursor = -1, r.innerHTML = "", s.length || n.noResults) { var c = new DocumentFragment; u.forEach((function (e, n) { var r = a(i.tag, t({ id: "".concat(i.id, "_").concat(n), role: "option", innerHTML: e.match, inside: c }, i.class && { class: i.class })); i.element && i.element(r, e) })), r.append(c), n.element && n.element(r, o), g(e) } else w(e) }(e), c.call(r)) } catch (e) { return o(e) } }), o) : (w(e), c.call(r)); function c() { return i() } })) } var S = function (e, t) { for (var n in e) for (var r in e[n]) t(n, r) }, T = function (e) { var n, r, i, o = e.events, s = (n = function () { return j(e) }, r = e.debounce, function () { clearTimeout(i), i = setTimeout((function () { return n() }), r) }), u = e.events = t({ input: t({}, o && o.input) }, e.resultsList && { list: o ? t({}, o.list) : {} }), a = { input: { input: function () { s() }, keydown: function (t) { !function (e, t) { switch (e.keyCode) { case 40: case 38: e.preventDefault(), 40 === e.keyCode ? A(t) : k(t); break; case 13: t.submit || e.preventDefault(), t.cursor >= 0 && L(t, e); break; case 9: t.resultsList.tabSelect && t.cursor >= 0 && L(t, e); break; case 27: t.input.value = "", w(t) } }(t, e) }, blur: function () { w(e) } }, list: { mousedown: function (e) { e.preventDefault() }, click: function (t) { !function (e, t) { var n = t.resultItem.tag.toUpperCase(), r = Array.from(t.list.querySelectorAll(n)), i = e.target.closest(n); i && i.nodeName === n && L(t, e, r.indexOf(i)) }(t, e) } } }; S(a, (function (t, n) { (e.resultsList || "input" === n) && (u[t][n] || (u[t][n] = a[t][n])) })), S(u, (function (t, n) { e[t].addEventListener(n, u[t][n]) })) }; function E(e) { var n = this; return new Promise((function (r, i) { var o, s, u; if (o = e.placeHolder, u = { role: "combobox", "aria-owns": (s = e.resultsList).id, "aria-haspopup": !0, "aria-expanded": !1 }, a(e.input, t(t({ "aria-controls": s.id, "aria-autocomplete": "both" }, o && { placeholder: o }), !e.wrapper && t({}, u))), e.wrapper && (e.wrapper = a("div", t({ around: e.input, class: e.name + "_wrapper" }, u))), s && (e.list = a(s.tag, t({ dest: [s.destination, s.position], id: s.id, role: "listbox", hidden: "hidden" }, s.class && { class: s.class }))), T(e), e.data.cache) return d(e).then((function (e) { try { return c.call(n) } catch (e) { return i(e) } }), i); function c() { return f("init", e), r() } return c.call(n) })) } function x(e) { var t = e.prototype; t.init = function () { E(this) }, t.start = function (e) { j(this, e) }, t.unInit = function () { if (this.wrapper) { var e = this.wrapper.parentNode; e.insertBefore(this.input, this.wrapper), e.removeChild(this.wrapper) } var t; S((t = this).events, (function (e, n) { t[e].removeEventListener(n, t.events[e][n]) })) }, t.open = function () { g(this) }, t.close = function () { w(this) }, t.goTo = function (e) { O(e, this) }, t.next = function () { A(this) }, t.previous = function () { k(this) }, t.select = function (e) { L(this, null, e) }, t.search = function (e, t, n) { return p(e, t, n) } } return function e(t) { this.options = t, this.id = e.instances = (e.instances || 0) + 1, this.name = "autoComplete", this.wrapper = 1, this.threshold = 1, this.debounce = 0, this.resultsList = { position: "afterend", tag: "ul", maxResults: 5 }, this.resultItem = { tag: "li" }, function (e) { var t = e.name, r = e.options, i = e.resultsList, o = e.resultItem; for (var s in r) if ("object" === n(r[s])) for (var a in e[s] || (e[s] = {}), r[s]) e[s][a] = r[s][a]; else e[s] = r[s]; e.selector = e.selector || "#" + t, i.destination = i.destination || e.selector, i.id = i.id || t + "_list_" + e.id, o.id = o.id || t + "_result", e.input = u(e.selector) }(this), x.call(this, e), E(this) } }, "object" == typeof exports && "undefined" != typeof module ? module.exports = t() : "function" == typeof define && define.amd ? define(t) : (e = "undefined" != typeof globalThis ? globalThis : e || self).autoComplete = t();
+
+
+
+        const idSynonym = document.querySelector("#synonym")
+
+        const idIdioms = document.querySelector("#idioms")
+
+        const idHomo = document.querySelector("#homo")
+
+        const idWord = document.querySelector("#word")
+
+        const idRootw = document.querySelector("#rootw")
+
+        const res = document.querySelector("#result")
+
+
+
+
+
+        const synonym = [
+
+            'Abate | Moderate, decrease | Aggravate ',
+
+            'Adhere | Comply, observe | Condemn, disjoin ',
+
+            'Abolish | Abrogate, annual | Setup Establish ',
+
+            'Acumen | Awareness, brilliance | Stupidity, Ignorance ',
+
+            'Abash | Disconcert, rattle | Uphold, Discompose ',
+
+            'Absolve | Pardon, forgive | Compel, Accuse ',
+
+            'Abjure | Forsake, renounce | Approve, Sanction ',
+
+            'Abject | Despicable, servile | Commendable, Praiseworthy ',
+
+            'Abound | Flourish, proliferate | Deficient, Destitute ',
+
+            'Abortive | Vain, unproductive | Productive ',
+
+            'Acrimony | Harshness, bitterness | Courtesy, Benevolence ',
+
+            'Accord | Agreement, harmony | Discord ',
+
+            'Adjunct | Joined, Added | Separated, Subtracted ',
+
+            'Adversity | Misfortune, calamity | Prosperity, Fortune ',
+
+            'Adherent | Follower, disciple | Rival, Adversary ',
+
+            'Adamant | Stubborn, inflexible | Flexible, Soft ',
+
+            'Admonish | Counsel, reprove | Approve, Applaud ',
+
+            'Allay | Pacify, soothe | Aggravate, Excite ',
+
+            'Alien | Foreigner, outsider | Native, Resident ',
+
+            'Ascend | Climb Escalate | Descend, Decline ',
+
+            'Alleviate | Abate, relieve | Aggravate, Enhance ',
+
+            'Allure | Entice, fascinate | Repulse Repel ',
+
+            'Arraign | Incriminate, indict | Exculpate, Pardon ',
+
+            'Amplify | Augment, deepen | Lessen, Contract ',
+
+            'Axiom | Adage, truism | Absurdity, Blunder ',
+
+            'Audacity | Boldness, Courage | Mildness, Cowardice ',
+
+            'Authentic | Accurate, credible | Fictitious, unreal ',
+
+            'Awkward | Rude, blundering | Adroit, clever ',
+
+            'Barbarous | Frustrate, perplex | Civilized ',
+
+            'Bleak | Grim, Austere | Bright, Pleasant ',
+
+            'Bewitching | Alluring, charming | Repulsive, Repugnant ',
+
+            'Baroque | Florid, gilt | Plain, unadorned ',
+
+            'Brittle | Breakable, crisp | Tough, Enduring ',
+
+            'Barrier | Barricade, Obstacle | Link, Assistance ',
+
+            'Baffle | Astound, Faze | Facilitate, Clarify ',
+
+            'Bustle | Commotion, Tumult | Slowness, Quiet ',
+
+            'Barren | Desolate, Sterile | Damp, Fertile ',
+
+            'Bawdy | Erotic, Coarse | Decent, Moral ',
+
+            'Bind | Predicament | Release ',
+
+            'Batty | Insane, silly | Sane ',
+
+            'Benevolent | Benign, Generous | Malevolent, Miserly ',
+
+            'Befogged | Becloud, Dim | Clear headed, Uncloud ',
+
+            'Base | Vulgar, Coarse | Summit, Noble ',
+
+            'Benign | Favorable, friendly | Malignant, Cruel ',
+
+            'Busy | Active, Engaged | Idle, Lazy ',
+
+            'Bleak | Austere, Blank | Bright, Cheerful ',
+
+            'Bold | Adventurous | Timid ',
+
+            'Boisterous | Clamorous, rowdy | Placid, Calm ',
+
+            'Blunt | Dull, Insensitive | Keen, Sharp ',
+
+            'Callous | obdurate, unfeeling | Compassionate, Tender ',
+
+            'Capable | competent, able | Incompetent, Inept ',
+
+            'Calamity | adversity, misfortune | Fortune ',
+
+            'Calculating | Canny, Devious | Artless, honest ',
+
+            'Calumny | defamation, aspersion | Commendation, Praise ',
+
+            'Captivity | imprisonment, confinement | Freedom, Liberty ',
+
+            'Captivate | Charm, fascinate | Disillusion offend ',
+
+            'Chaste | virtuous, pure | Sullied, Lustful ',
+
+            'Cease | terminate, desist | Begin, Originate ',
+
+            'Compassion | kindness, sympathy | Cruelty, Barbarity ',
+
+            'Chastise | punish, admonish | Cheer, encourage ',
+
+            'Concede | yield, permit | Deny, reject ',
+
+            'Comprise | include, contain | Reject, lack ',
+
+            'Consent | agree, permit | Object Disagree ',
+
+            'Concur | approve, agree | Differ, disagree ',
+
+            'Consolidate | solidify, strengthen | Separate, Weaken ',
+
+            'Consequence | effect, outcome | Origin, Start ',
+
+            'Contempt | scorn, disregard | Regard, Praise ',
+
+            'Conspicuous | prominent, obvious | Concealed, hidden ',
+
+            'Contrary | dissimilar, conflicting | Similar, Alike ',
+
+            'Contradict | deny, oppose | Approve, Confirm ',
+
+            'Callous | Insensitive, indurated | Kind, merciful ',
+
+            'Calm | Harmonious, unruffled | Stormy, turbulent ',
+
+            'Candid | Blunt, bluff | Evasive ',
+
+            'Camouflage | Cloak, disguise | Reveal ',
+
+            'Carnal | Earthly, fleshly | Spiritual ',
+
+            'Captivate | Beguile, bewitch | Repel ',
+
+            'Celebrated | Acclaimed, lionized | Unknown, Inglorious ',
+
+            'Catholic | Generic, liberal | Narrow- minded ',
+
+            'Censure | Rebuke, reprimand | Praise, Acceptance ',
+
+            'Cement | Plaster, mortar | Disintegrate ',
+
+            'Clandestine | Covert, fruitive | Open, Legal ',
+
+            'Cheap | Competitive, Inexpensive | Dear, unreasonable ',
+
+            'Coarse | Bawdy, Boorish | Fine, Chaste ',
+
+            'Classic | Simple, Typical | Romantic, Unusual ',
+
+            'Compact | Bunched, thick | Loose, Diffuse ',
+
+            'Comic | Clown, Jester | Tragic, tragedian ',
+
+            'Conceit | Egotism, Immodesty | Modesty ',
+
+            'Compress | Abbreviate, Shrink | Amplify, Expand ',
+
+            'Condemn | Castigate, Chide | Approve, Praise ',
+
+            'Concord | Agreement, accord | Discord ',
+
+            'Consolidate | Centralize, Fortify | Weaken ',
+
+            'Confident | Bold, Undaunted | Diffident, cowardly ',
+
+            'Creation | Formation, foundation | Destruction ',
+
+            'Courtesy | Generosity, Reverence | Disdain, Rudeness ',
+
+            'Cunning | Acute, Smart | Nave, Coarse ',
+
+            'Decipher | interpret, reveal | Misinterpret, distort ',
+
+            'Decay | Collapse, decompose | Flourish, Progress ',
+
+            'Deceit | deception, artifice | Veracity, Sincerity ',
+
+            'Defray | spend, pay | Disclaim, Repudiate ',
+
+            'Defile | contaminate, pollute | Purify, sanctity ',
+
+            'Demolish | Ruin, devastate | Repair, construct ',
+
+            'Deliberate | cautious, intentional | Rash, Sudden ',
+
+            'Deride | mock, taunt | Inspire, Encourage ',
+
+            'Deprive | despoil, divest | Restore, Renew ',
+
+            'Dissuade | Remonstrate, Counsel | Insite, Persuade ',
+
+            'Disdain | detest, despise | Approve, praise ',
+
+            'Dense | Opaque, piled | Sparse, brainy ',
+
+            'Denounce | Blame, boycott | Defend ',
+
+            'Despair | Depression, misery | Contentment, Hope ',
+
+            'Derogatory | Sarcastic, critical | Laudatory, appreciative ',
+
+            'Docile | Pliable, pliant | Headstrong, obstinate ',
+
+            'Destructive | Catastrophic, pernicious | Creative, Constructive ',
+
+            'Dwarf | Diminutive, Petite | Huge, Giant ',
+
+            'Eclipse | Diminution, Dimming | Shine, eclipse ',
+
+            'Eager | Keen, acquisitive | Indifferent, apathetic ',
+
+            'Ecstasy | delight, exultation | Despair, Calamity ',
+
+            'Eccentric | strange, abnormal | Natural, Conventional ',
+
+            'Encumbrance | hindrance, obstacle | Incentive, stimulant ',
+
+            'Efface | destroy, obliterate | Retain, Maintain ',
+
+            'Eloquence | expression, fluency | Halting, Stammering ',
+
+            'Enormous | colossal, mammoth | Diminutive, negligible ',
+
+            'Endeavour | undertake, aspire | Cease, quit ',
+
+            'Equivocal | uncertain, hazy | Obvious, lucid ',
+
+            'Epitome | precise, example | Increment, expansion ',
+
+            'Eradicate | destroy, exterminate | Secure, plant ',
+
+            'Fallacy | delusion, mistake | Veracity, Truth ',
+
+            'Fabricate | construct, produce | Destroy, Dismantle ',
+
+            'Fanatical | narrow-minded, biased | Liberal, Tolerant ',
+
+            'Falter | stumble, demur | Persist, Endure ',
+
+            'Ferocious | cruel, fierce | Gentle, Sympathetic ',
+
+            'Feeble | weak, frail | Strong, Robust ',
+
+            'Fluctuate | deflect, vacillate | Stabilize, resolve ',
+
+            'Feud | strife, quarrel | Harmony, fraternity ',
+
+            'Fragile | weak, infirm | Enduring, Tough ',
+
+            'Forsake | desert, renounce | Hold, maintain ',
+
+            'Frivolous | petty, worthless | Solemn, significant ',
+
+            'Frantic | violent, agitated | Subdued, gentle ',
+
+            'Frugality | economy, providence | Lavishness, extravagance ',
+
+            'Gloom | obscurity, darkness | Delight, mirth ',
+
+            'Gather | Converge, huddle | Disperse, Dissemble ',
+
+            'Gorgeous | magnificent, dazzling | Dull, unpretentious ',
+
+            'Glut | stuff, satiate | Starve, abstain ',
+
+            'Grisly | disgusting, atrocious | Pleasing, attractive ',
+
+            'Gracious | courteous, beneficent | Rude, Unforgiving ',
+
+            'Guile | cunning, deceit | Honesty, frankness ',
+
+            'Grudge | hatred, aversion | Benevolence, Affection ',
+
+            'Genuine | Absolute, Factual | Spurious ',
+
+            'Generosity | Altruism, bounty | Stinginess, greed ',
+
+            'Glory | Dignity, renown | Shame, Disgrace ',
+
+            'Gloomy | Bleak, cloudy | Gay, Bright ',
+
+            'Harass | irritate, molest | Assist, comfort ',
+
+            'Hamper | retard, prevent | Promote, facilitate ',
+
+            'Hazard | Peril, danger | Conviction, security ',
+
+            'Hapless | unfortunate, ill-fated | Fortunate, Lucky ',
+
+            'Haughty | arrogant, pompous | Humble, Submissive ',
+
+            'Hideous | frightful, shocking | Attractive, alluring ',
+
+            'Heretic | non-conformist, secularist | Conformable, religious ',
+
+            'Harmony | Conformity, Amicability | Discord, discord ',
+
+            'Hamstrung | Cripple Debilitate | Strengthen, Encourage ',
+
+            'Honor | Adoration, Reverence | Denunciation, Shame ',
+
+            'Hasty | Abrupt, Impetuous | Leisurely, Cautious ',
+
+            "Humility | Resignation, Fawning | Boldness, Pride ",
+
+            "Humble | Meek, Timid | Proud, Assertive ",
+
+            "Impenitent | Uncontrite, Obdurate | Repentant ",
+
+            "Hypocrisy | Deception, Pharisaism | Sincerity, frankness ",
+
+            "Indifferent | Equitable, Haughty | Partial, Biased ",
+
+            "Impulsive | Flaky, Impetuous | Cautious, Deliberate ",
+
+            "Infernal | Damned, Accursed | Heavenly, ",
+
+            "Indigent | Destitute, Impoverished | Rich, Affluent ",
+
+            "Interesting | Enchanting, Riveting | Dull, Uninteresting ",
+
+            "Insipid | Tedious, Prosaic | Pleasing, appetizing ",
+
+            "Immense | huge, enormous | Puny, Insignificant ",
+
+            "Immaculate | unsullied, spotless | Defiled, Tarnished ",
+
+            "Imminent | impending, brewing | Distant, Receding ",
+
+            "Immerse | submerge, involve | Emerge, uncover ",
+
+            "Impair | diminish, deteriorate | Restore, Revive ",
+
+            "Immunity | prerogative, privilege | Blame, Censure ",
+
+            "Impediment | hurdle, obstruction | Assistant, Concurrence ",
+
+            "Impartial | just, unbiased | Prejudiced, Biased ",
+
+            "Impute | attribute, ascribe | Exculpate, support ",
+
+            "Impious | irreligious, unholy | Pious, Devout ",
+
+            "Incompetent | inefficient, unskilled | Dexterous, Skilled ",
+
+            "Inclination | disposition, affection | Indifference, Disinclination ",
+
+            "Inevitable | unavoidable, ascertained | Unlikely, Doubtful ",
+
+            "Incongruous | inappropriate, absurd | Compatible, harmonious ",
+
+            "Ingenuous | undisguised, naive | Wily, Craftly ",
+
+            "Infringe | violate, encroach | Comply, Concur ",
+
+            "Insipid | tasteless, vapid | Delicious, luscious ",
+
+            "Insinuate | allude, hint | Conceal, Camouflage ",
+
+            "Instill | inculcate, inject | Eradicate, extract ",
+
+            "Insolvent | indigent, destitute | Wealthy, solvent ",
+
+            "Intrigue | scheme, conspiracy | Candor, Sincerity ",
+
+            "Intricate | tangled, complicated | Regulated, Orderly ",
+
+            "Invective | accusation, censure | Approval, acclamation ",
+
+            "Intrinsic | genuine, fundamental | Extraneous, incidental ",
+
+            "Immaculate | Exquisite, Impeccable | Defiled, Tarnished ",
+
+            "Invincible | unconquerable, impregnable | Effeminate, languid ",
+
+            "Irrepressible | irresistible, unconfined | Composed, hesitant ",
+
+            "Jejune | dull, boring | Interesting, exciting ",
+
+            "Jaded | tired, exhausted | Renewed, recreated ",
+
+            "Jubilant | rejoicing, triumphant | Melancholy, depressing ",
+
+            "Jovial | frolicsome, cheerful | Solemn, morose ",
+
+            "Just | honest, impartial | Unequal, unfair ",
+
+            "Judicious | thoughtful, prudent | Irrational, foolish ",
+
+            "Juvenile | young, tender | Dotage, antiquated ",
+
+            "Justify | defend, exculpate | Impute, arraign ",
+
+            "Knave | dishonest, scoundrel | Paragon, innocent ",
+
+            "Knotty | complicated difficult | Simple, manageable ",
+
+            "Kindred | relation, species | Unrelated, dissimilar ",
+
+            "Keen | sharp, poignant | Vapid, insipid ",
+
+            "Knell | death knell, last blow | Reconstruction, rediscovery ",
+
+            "Lax | slack, careless | Firm, reliable ",
+
+            "Lavish | abundant, excessive | Scarce, deficient ",
+
+            "Liable | accountable, bound | Unaccountable, apt to ",
+
+            "Lenient | compassionate, merciful | Cruel, severe ",
+
+            "Lucid | sound, rational | Obscure, hidden ",
+
+            "Lure | attract, entice | Repel, dissuade ",
+
+            "Linger | loiter, prolong | Hasten, quicken ",
+
+            "Liberal | magnanimous, generous | Stingy, malicious ",
+
+            "Lunacy | delusion, insanity | Normalcy, sanity ",
+
+            "Luxuriant | profuse, abundant | Scanty, meagre ",
+
+            "Luscious | palatable, delicious | Unsavory, tart ",
+
+            "Languid | Sluggish, apathetic | Energetic, spirited ",
+
+            "Mandatory | Imperative, requisite | Optional ",
+
+            "Malice | Vengefulness, grudge | Goodwill, Kindness ",
+
+            "Merit | Stature, Asset | Demerit, dishonor ",
+
+            "Masculine | Gallant, strapping | Feminine, meek ",
+
+            "Mitigate | alleviate, relieve | Augment enhance ",
+
+            "Miraculous | marvelous, extraordinary | Ordinary, trivial ",
+
+            "Molest | harass, tease | Console, soothe ",
+
+            "Modest | humble, courteous | Arrogant, pompous ",
+
+            "Momentous | notable, eventful | Trivial, insignificant ",
+
+            "Mollify | appease, assuage | Irritate, infuriate ",
+
+            "Morbid | Nasty, Macabre | Healthy, Cheerful ",
+
+            "Monotonous | irksome, tedious | Varied, pleasant ",
+
+            "Murky | dusky, dreary | Bright, shining ",
+
+            "Munificent | liberal, hospitable | Frugal, penurious ",
+
+            "Mutual | joint, identical | Separate, distinct ",
+
+            "Mutinous | recalcitrant, insurgent | Submissive, faithful ",
+
+            "Nimble | prompt, brisk | Sluggish, languid ",
+
+            "Niggardly | miser, covetous | Generous, profuse ",
+
+            "Noxious | baneful, injurious | Healing, profitable ",
+
+            "Notion | Conceit, Apprehension | Reality, Concrete ",
+
+            "Novice | tyro, beginner | Veteran, ingenious ",
+
+            "Nonchalant | indifferent, negligent | Attentive, considerate ",
+
+            "Nullify | cancel, annual | Confirm, Uphold ",
+
+            "Numerous | profuse, various | Scarce, deficient ",
+
+            "Obliging | Complaisant, Willing | Mulish, Obstinate ",
+
+            "Obstruct | impede, prevent | Hasten, encourage ",
+
+            "Obstinate | Stubborn, Adamant | Pliable, flexible ",
+
+            "Obscure | Arcane, Vague | Prominent ",
+
+            "Obvious | Evident, apparent | Obscure, ambiguous ",
+
+            "Obtain | Access, Inherit | Forfeit ",
+
+            "Offensive | Abhorrent, obnoxious | Engaging, fascinating ",
+
+            "Odious | Malevolent, obnoxious | Engaging, fascinating ",
+
+            "Offspring | descendant, sibling | Ancestor, forefather ",
+
+            "Occult | latent, ambiguous | Intelligible, transparent ",
+
+            "Opaque | obscure, shady | Transparent, bright ",
+
+            "Ominous | Menacing, Foreboding | Auspicious ",
+
+            "Oracular | cryptic, vague | Lucid, distinct ",
+
+            "Optimist | Idealist | Pessimist ",
+
+            "Ornamental | decorative, adorned | Unseemly, plain ",
+
+            "Ordain | Order, impose | Revoke abolish ",
+
+            "Outrage | offence, maltreatment | Praise, favour ",
+
+            "Outbreak | eruption, insurrection | Compliance, subjection ",
+
+            "Persuade | Cajole, Impress | Dissuade, halt ",
+
+            "Pacify | Appease, Chasten | Irritate, worsen ",
+
+            "Propagate | Inseminate, fecundate | Suppress, deplete ",
+
+            "Perturbed | Flustered, anxious | Calm ",
+
+            "Prompt | Precise, Punctual | Slow, Negligent ",
+
+            "Progress | Pace, Betterment | Retrogress, worsening ",
+
+            "Pamper | Flatter, indulge | Deny, disparage ",
+
+            "Prudence | Vigilance, Discretion | Indiscretion ",
+
+            "Peerless | matchless, unrivalled | Mediocre, commonplace ",
+
+            "Paramount | foremost, eminent | Trivial, inferior ",
+
+            "Pertness | flippancy, impudence | Modesty, diffidence ",
+
+            "Peevish | perverse, sullen | Suave, amiable ",
+
+            "Placid | tranquil, calm | Turbulent, hostile ",
+
+            "Perverse | petulant, obstinate | Complacent, docile ",
+
+            "Precarious | doubtful, insecure | Assured ",
+
+            "Pompous | haughty, arrogant | Unpretentious, humble ",
+
+            "Predicament | plight, dilemma | Resolution, confidence ",
+
+            "Quaint | Queer, strange | Familiar, usual ",
+
+            "Quack | Impostor, deceiver | Upright, unfeigned ",
+
+            "Quell | subdue, reduce | Exacerbate, agitate ",
+
+            "Quarantine | seclude, screen | Befriend, socialize ",
+
+            "Quibble | equivocate, prevaricate | Unfeigned, plain ",
+
+            "Rapidity | Quickness, Velocity | Inertia, lanquidity ",
+
+            "Raid | Incursion, Foray | Retreat, release ",
+
+            "Rebellious | Restless, attacking | Submissive, Compliant ",
+
+            "Reason | Acumen, Bounds | Folly, Speculation ",
+
+            "Reluctant | Cautious, Averse | anxious, Eager ",
+
+            "Rectify | Amend, Remedy | Falsify, Worsen ",
+
+            "Ravage | Destroy, ruin | Reconstruct, renovate ",
+
+            "Remnant | Residue, piece | Entire, whole ",
+
+            "Ratify | consent, approve | Deny, dissent ",
+
+            "Restrain | Detain, Confine | Incite ",
+
+            "Redeem | Recover, liberate | Conserve lose ",
+
+            "Remorse | Regret, penitence | Ruthlessness, obduracy ",
+
+            "Remonstrate | Censure, protest | Agree, loud ",
+
+            "Resentment | Displeasure, wrath | Content, Cheer ",
+
+            "Rescind | Annul, abrogate | Delegate, permit ",
+
+            "Reverence | Respect, esteem | Disrespect, affront ",
+
+            "Retract | Recant, withdraw | Confirm, assert ",
+
+            "Rustic | Rural, uncivilized | Cultured, Refined ",
+
+            "Rout | Vanquish, overthrow | Succumb, withdraw ",
+
+            "Ruthless | Remorseless, inhumane | Compassionate, lenient ",
+
+            "Savage | Wild, untamed | Polished, Civilized ",
+
+            "Sacred | Cherish, Divine | Ungodly, Profane ",
+
+            "Steep | Course, lofty | Flat, gradual ",
+
+            "Startled | Frightened, Shocked | Waveringly ",
+
+            "Sublime | Magnificent, eminent | Ridiculous ",
+
+            "Stranger | Immigrant, guest | Acquaintance, national ",
+
+            "Sympathy | Tenderness, harmony | Antipathy, Discord ",
+
+            "Succinct | Concise, Terse | Lengthy, polite ",
+
+            "Sarcastic | Ironical, derisive | Courteous, gracious ",
+
+            "System | Scheme, Entity | Chaos, Disorder ",
+
+            "Shrewd | Cunning, craftly | Simple, imbecile ",
+
+            "Saucy | Impudent, insolent | Modest, humble ",
+
+            "Servile | Slavish, Docile | Aggressive, Dominant ",
+
+            "Scanty | scarce, insufficient | Lavish, multitude ",
+
+            "Slander | defame, malign | Applaud, approve ",
+
+            "Shabby | miserable, impoverished | Prosperous, thriving ",
+
+            "Solicit | entreat, implore | Protest oppose ",
+
+            "Sneer | mock, scorn | Flatter, praise ",
+
+            "Stain | blemish, tarnish | Honor, purify ",
+
+            "Subterfuge | Deceit, Stratagem | Frankness, Openness ",
+
+            "Sporadic | intermittent, scattered | Incessant, frequent ",
+
+            "Spurious | Fake, Counterfeit | Genuine, Authentic ",
+
+            "Squalid | dirty, filthy | Tidy, Attractive ",
+
+            "Spry | Nimble, Brisk | Lethargic, Sluggish ",
+
+            "Sterile | Barren, Impotent | Profitable, Potent ",
+
+            "Successful | Propitious, Felicitous | Destitute, Untoward ",
+
+            "Subsequent | consequent, following | Preceding, previous ",
+
+            "Stupor | lethargy, unconsciousness | Sensibility, Consciousness ",
+
+            "Subvert | Demolish, sabotage | Generate, organize ",
+
+            "Substantial | Considerable, solid | Tenuous, fragile ",
+
+            "Sycophant | Parasite, flatterer | Devoted, loyal ",
+
+            "Superficial | Partial, shallow | Profound, discerning ",
+
+            "Taciturn | Reserved, silent | Talkative, extrovert ",
+
+            "Taboo | Prohibit, ban | Permit, consent ",
+
+            "Temperate | Cool, moderate | Boisterous, violent ",
+
+            "Tedious | Wearisome. Irksome | Exhilarating, lively ",
+
+            "Tenacious | Stubborn, Dodge | Docile, non- resinous ",
+
+            "Tenement | Apartment, Digs | Breakeven, dislodge ",
+
+            "Timid | Diffident, coward | Bold, intrepid ",
+
+            "Throng | Assembly, crowd | Dispersion, sparsity ",
+
+            "Transient | Temporal, transitory | Lasting, enduring ",
+
+            "Tranquil | Peaceful, composed | Violent, furious ",
+
+            "Treacherous | Dishonest, duplicitous | Forthright, reliable ",
+
+            "Trenchant | Assertive, forceful | Feeble, ambiguous ",
+
+            "Tumultuous | Violent, riotous | Peaceful, harmonious ",
+
+            "Trivial | Trifling, insignificant | Significant, veteran ",
+
+            "Tame | Compliant, Subdued | Wild, untamed ",
+
+            "Tyro | Beginner, riotous | Proficient, veteran ",
+
+            "Thick | Chunky, massive | Thin, attenuated ",
+
+            "Terse | Incisive, Compact | Diffuse, Gentle ",
+
+            "Tranquil | Amicable, Calm | Agitated, Fierce ",
+
+            "Thrifty | Frugal, prudent | Extravagant ",
+
+            "Tremble | Vibrate | Steady ",
+
+            "Transparent | Diaphanous | Opaque ",
+
+            "Utterly | Completely, entirely | Deficiently, incomplete ",
+
+            "Uncouth | Awkward, ungraceful | Elegant, Compensate ",
+
+            "Uncouth | Boorish, Clownish | Elegant, Compensate ",
+
+            "Umbrage | Chagrin, offense | Sympathy, goodwill ",
+
+            "Urge | Incite, Implore | Abhorrence, Abomination ",
+
+            "Urchin | Foundling, Orphan | Creep, Knave ",
+
+            "Vagrant | Wander, roaming | Steady, settled ",
+
+            "Vain | Arrogant, egoistic | Modest ",
+
+            "Vanity | Conceit, pretension | Modesty, Humility ",
+
+            "Valor | Bravery, prowess | Fear, cowardice ",
+
+            "Venom | Poison, malevolence | Antidote, Benevolent ",
+
+            "Venerable | Esteemed, honored | Unworthy, immature ",
+
+            "Vicious | Corrupt, obnoxious | Noble, Virtuous ",
+
+            "Veteran | Ingenious, experienced | Novice, tyro ",
+
+            "Vivacious | Spirited, Energetic | Dispirited, Unattractive ",
+
+            "Vigilant | Cautious, alert | Careless, negligent ",
+
+            "Vouch | Confirm, consent | Repudiate, prohibit ",
+
+            "Vilify | Malign, Slur, Defame | Cherish, Commend ",
+
+            "Vivid | Eloquent, lucid | Dull, Dim ",
+
+            "Virtue | Ethic, morality | Vice, dishonesty ",
+
+            "Wan | Pale, faded | Bright, healthy ",
+
+            "Waive | Relinquish, remove | Impose, Clamp ",
+
+            "Wary | cautious, circumspect | Heedless, negligent ",
+
+            "Wane | Decline, Dwindle | Ameliorate, Rise ",
+
+            "Wicked | vicious, immoral | Virtuous, Noble ",
+
+            "Wed | marry, combine | Divorce, Separate ",
+
+            "Wile | Trickery, Artifice | Naivety, honor ",
+
+            "Wield | Exert, employ | Forgo, avoid ",
+
+            "Wilt | wither, perish | Revive, bloom ",
+
+            "Winsome | Beautiful, Comely | Alluring, Rapturous ",
+
+            "Yield | surrender abdicate | Resist, protest ",
+
+            "Yell | shout, shriek | Whisper muted ",
+
+            "Yoke | connect, harness | Liberate, Release ",
+
+            "Yearn | languish, crave | Content, satisfy ",
+
+            "Zenith | summit, apex | Nadir, base ",
+
+            "Zeal | eagerness, fervor | Apathy, lethargy ",
+
+            "Zig -zag | oblique, wayward | Straight, unbent ",
+
+            "Zest | delight, enthusiasm | Disgust, passive "
+            
+        ]
+
+
+
+        const idioms = [
+
+            "A Bird In The Hand Is Worth Two In The Bush: Having something that is certain is much better than taking a risk for more, because chances are you might lose everything.",
+
+            "A Blessing In Disguise: Something good that isn't recognized at first.",
+
+            "A black sheep: An odd or disreputable member of a group, especially within a family.",
+
+            "A Chip On Your Shoulder: Being upset for something that happened in the past",
+
+            "A Dime A Dozen: Anything that is common and easy to get.",
+
+            "A Doubting Thomas: A skeptic who needs physical or personal evidence in order to believe something.",
+
+            "A House Divided Against Itself Cannot Stand: Everyone involved must unify and function together or it will not work out.",
+
+            "A Leopard Can't Change His Spots: You cannot change who you are.",
+
+            "A Penny Saved Is A Penny Earned: By not spending money, you are saving money (little by little).",
+
+            "A Picture Paints a Thousand Words: A visual presentation is far more descriptive than words.",
+
+            "A Piece of Cake: A task that can be accomplished very easily.",
+
+            "A Slap on the Wrist: A very mild punishment.",
+
+            "A Taste Of Your Own Medicine: When you are mistreated the same way you mistreat others.",
+
+            "At The Drop Of A Hat: Willing to do something immediately.",
+
+            "Back Seat Driver: People who criticize from the sidelines, much like someone giving unwanted advice from the back seat of a vehicle to the driver.",
+
+            "Back To Square One: Having to start all over again.",
+
+            "Baker's Dozen: Thirteen.",
+
+            "Barking Up The Wrong Tree: A mistake made in something you are trying to achieve.",
+
+            "Blue Moon: A rare event or occurance.",
+
+            "Break A Leg: A superstitious way to say 'good luck' without saying 'good luck', but rather the opposite.",
+
+            "Buy A Lemon: To purchase a vehicle that constantly gives problems or stops running after you drive it away.",
+
+            "Can't Cut The Mustard: Someone who isn't adequate enough to compete or participate.",
+
+            "Cast Iron Stomach: Someone who has no problems, complications or ill effects with eating anything or drinking anything",
+
+            "Catch a tarter: To catch a dangerous person",
+
+            "Charley Horse: Stiffness in the leg / A leg cramp.",
+
+            "Cross Your Fingers: To hope that something happens the way you want it to.",
+
+            "Cry Over Spilt Milk: When you complain about a loss from the past.",
+
+            "Cry Wolf: Intentionally raise a false alarm.",
+
+            "Cup Of Joe: A cup of coffee.",
+
+            "Curiosity Killed The Cat: Being Inquisitive can lead you into a dangerous situation",
+
+            "Cut to the Chase: Leave out all the unnecessary details and just get to the point.",
+
+            "Dark Horse: One who was previously unknown and is now prominent",
+
+            "Dead Ringer: 100% identical. A duplicate.",
+
+            "Devil's Advocate: Someone who takes a position for the sake of argument without believing in that particular side of the arguement. It can also mean one who presents a counter argument for a position they do believe in, to another debater.",
+
+            "Dog Days of Summer: The hottest days of the summer season.",
+
+            "Don't count your chickens before they hatch: Don't rely on it until your sure of it.",
+
+            "Don't Look A Gift Horse In The Mouth: When someone gives you a gift, don't be ungrateful",
+
+            "Drive someone up the wall: To irritate and/or annoy very much.",
+
+            "Dropping Like Flies: A large number of people either falling ill or dying.",
+
+            "Dry Run: Rehearsal.",
+
+            "Eighty Six: A certain item is no longer available. Or this idiom can also mean, to throw away.",
+
+            "Elvis has left the building: The show has come to an end. It's all over.",
+
+            "Ethnic Cleansing: Killing of a certain ethnic or religious group on a massive scale.",
+
+            "Every Cloud Has A Silver Lining: Be optomistic, even difficult times will lead to better days.",
+
+            "Everything But The Kitchen Sink: Almost everything and anything has been included.",
+
+            "Excuse my French: Please forgive me for cussing.",
+
+            "Cock and Bull Story: An unbelievable tale.",
+
+            "Cock and Bull Story: An unbelievable tale",
+
+            "Feeding Frenzy: An aggressive attack on someone by a group.",
+
+            "Field Day: An enjoyable day or circumstance.",
+
+            "Fixed In Your Ways: Not willing or wanting to change from your normal way of doing something.",
+
+            "From Rags To Riches: To go from being very poor to being very wealthy",
+
+            "Full Monty: This idiom can mean either, 'the whole thing' or 'completely nude'.",
+
+            "Funny Farm: A mental institutional facility.",
+
+            "Get Down to Brass Tacks: To become serious about something.",
+
+            "Get Over It: To move beyond something that is bothering you.",
+
+            "Go For Broke: To gamble everything you have.",
+
+            "Go Out On A Limb: Put yourself in a tough position in order to support someone/something.",
+
+            "Go The Extra Mile: Going above and beyond whatever is required for the task at hand.",
+
+            "Good Samaritan: Someone who helps others when they are in need, with no discussion for compensation, and no thought of a reward.",
+
+            "Green Room: The waiting room, especially for those who are about to go on a tv or radio show",
+
+            "Gut Feeling: A personal intuition you get, especially when feel something may not be right.",
+
+            "Haste Makes Waste: Quickly doing things results in a poor ending.",
+
+            "Hat Trick: When one player scores three goals in the same hockey game. This idiom can also mean three scores in any other sport, such as 3 homeruns, 3 touchdowns, 3 soccer goals, etc.",
+
+            "Have an Axe to Grind: To have a dispute with someone",
+
+            "He Lost His Head: Angry and overcome by emotions",
+
+            "Head Over Heels: Very excited and/or joyful, especially when in love.",
+
+            "Hell in a Handbasket: Deteriorating and headed for complete disaster.",
+
+            "High Five: Slapping palms above each others heads as celebration gesture.",
+
+            "Hit The Books: To study, especially for a test or exam.",
+
+            "Hit The Hay: Go to bed or go to sleep.",
+
+            "Hit The Nail on the Head: Do something exactly right or say something exactly right",
+
+            "Hit The Sack: Go to bed or go to sleep.",
+
+            "Hocus Pocus: In general, a term used in magic or trickery.",
+
+            "Hold Your Horses: Be patient.",
+
+            "Icing On The Cake: When you already have it good and get something on top of what you already have.",
+
+            "In Like Flynn: To be easily successful, especially when sexual or romantic.",
+
+            "In The Bag: To have something secured.",
+
+            "It's A Small World: You frequently see the same people in different places.",
+
+            "Its Anyone's Call: A competition where the outcome is difficult to judge or predict.",
+
+            "Ivy League: Since 1954 the Ivy League has been the following universities: Columbia, Brown, Cornell, Dartmouth, Yale, Pennsylvania, Princeton, and Harvard.",
+
+            "Jaywalk: Crossing the street (from the middle) without using the crosswalk.",
+
+            "Joshing Me: Tricking me.",
+
+            "Keep An Eye On Him: You should carefully watch him.",
+
+            "Keep body and soul together: To earn a sufficient amount of money in order to keep yourself alive.",
+
+            "Keeps one's temper: To be in good mood.",
+
+            "Keep your chin up: To remain joyful in a tough situation.",
+
+            "Kick The Bucket: Die.",
+
+            "Kitty-corner: Diagonally across. Sometimes called Catty-Corner as well.",
+
+            "Knee Jerk Reaction: A quick and automatic response.",
+
+            "Knock On Wood: Knuckle tapping on wood in order to avoid some bad luck.",
+
+            "Know the Ropes: To understand the details",
+
+            "Last but not least: An introduction phrase to let the audience know that the last person mentioned is no less important than those introduced before him/her.",
+
+            "Leave someone in the lurch: To desert someone in his difficulties",
+
+            "Lend Me Your Ear: To politely ask for someone's full attention.",
+
+            "Let The Cat Out Of The Bag: To share a secret that wasn't suppose to be shared.",
+
+            "Level playing field: A fair competition where no side has an advantage.",
+
+            "Like a chicken with its head cut off: To act in a frenzied manner.",
+
+            "Long in the Tooth: Old people (or horses).",
+
+            "Loose Cannon: Someone who is unpredictable and can cause damage if not kept in check.",
+
+            "Make No Bones About: To state a fact so there are no doubts or objections.",
+
+            "Method To My Madness: Strange or crazy actions that appear meaningless but in the end are done for a good reason",
+
+            "Mumbo Jumbo: Nonsense or meaningless speech.",
+
+            "Mum's the word: To keep quiet. To say nothing.",
+
+            "Make clean breast of: To confess without of reserve.",
+
+            "Nest Egg: Savings set aside for future use.",
+
+            "Never Bite The Hand That Feeds You: Don't hurt anyone that helps you,",
+
+            "New kid on the block: Someone new to the group or area.",
+
+            "New York Minute: A minute that seems to go by quickly, especially in a fast paced environment.",
+
+            "No Dice: To not agree. To not accept a proposition.",
+
+            "No Room to Swing a Cat: An unsually small or confined space.",
+
+            "Not Playing With a Full Deck: Someone who lacks intelligence.",
+
+            "Off On The Wrong Foot: Getting a bad start on a relationship or task.",
+
+            "Off The Hook: No longer have to deal with a tough situation.",
+
+            "Off the Record: Something said in confidence that the one speaking doesn't want attributed to him/her.",
+
+            "On Pins And Needles: Anxious or nervous, especially in anticipation of something",
+
+            "On The Fence: Undecided.",
+
+            "On The Same Page: When multiple people all agree on the same thing",
+
+            "Out Of The Blue: Something that suddenly and unexpectedly occurs",
+
+            "Out On A Limb: When someone puts themself in a risky situation.",
+
+            "Out On The Town: To enjoy yourself by going out.",
+
+            "Over My Dead Body: When you absolutely will not allow something to happen.",
+
+            "Over the Top: Very excessive.",
+
+            "Pass The Buck: Avoid responsibility by giving it to someone else.",
+
+            "Pedal to the metal: To go full speed, especially while driving a vehicle.",
+
+            "Peeping Tom: Someone who observes people in the nude or sexually active people, mainly for his own gratification.",
+
+            "Pick up your ears: To listen very carefully.",
+
+            "Pull the plug: To stop something. To bring something to an end.",
+
+            "Pulling Your Leg: Tricking someone as a joke.",
+
+            "Put a sock in it: To tell noisy person or a group to be quiet.",
+
+            "Put one's hand to plough: To take a difficult task",
+
+            "Queer the pitch: Destroy or ruin a plan.",
+
+            "Raincheck: An offer or deal that is declined right now but willing to accept later.",
+
+            "Raining Cats and Dogs: A very loud and noisy rain storm.",
+
+            "Ring Fencing: Seperated usual judgement to guarantee protection, especially project funds.",
+
+            "Rise and Shine: Time to get out of bed and get ready for work/school.",
+
+            "Rome Was Not Built In One Day: If you want something to be completely properly, then its going to take time.",
+
+            "Rule Of Thumb: A rough estimate.",
+
+            "Run out of steam: To be completely out of energy.",
+
+            "Saved By The Bell: Saved at the last possible moment.",
+
+            "Scapegoat: Someone else who takes the blame.",
+
+            "Scot-free: To escape and not have to pay.",
+
+            "Set one's face against: To oppose with determination",
+
+            "Sick As A Dog: To be very sick (with the flu or a cold).",
+
+            "Skid Row: The rundown area of a city where the homeless and drug users live.",
+
+            "Smell A Rat: To detect somone in the group is betraying the others.",
+
+            "Smell Something Fishy: Detecting that something isn't right and there might be a reason for it.",
+
+            "Son of a Gun: A scamp.",
+
+            "Southpaw: Someone who is left-handed.",
+
+            "Spitting Image: The exact likeness or kind.",
+
+            "Start From Scratch: To do it all over again from the beginning.",
+
+            "The Ball Is In Your Court: It is your decision this time.",
+
+            "The Best Of Both Worlds: There are two choices and you have them both.",
+
+            "Third times a charm: After no success the first two times, the third try is a lucky one.",
+
+            "Tie the knot: To get married.",
+
+            "Til the cows come home: A long time.",
+
+            "To be above board: To be honest in any business deal",
+
+            "To Make A Long Story Short: Something someone would say during a long and boring story in order to keep his/her audience from losing attention. Usually the story isn't shortened.",
+
+            "To Steal Someone's Thunder: To take the credit for something someone else did.",
+
+            "To cry wolf: To give false alarm",
+
+            "Tongue-in-cheek: humor, not to be taken serious.",
+
+            "Under the weather: Feeling ill or sick.",
+
+            "Up a blind alley: Going down a course of action that leads to a bad outcome.",
+
+            "Use Your Loaf: Use your head. Think smart.",
+
+            "Van Gogh's ear for music: Tone deaf.",
+
+            "Variety Is The Spice Of Life: The more experiences you try the more exciting life can be.",
+
+            "Wag the Dog: A diversion away from something of greater importance.",
+
+            "Water Under The Bridge: Anything from the past that isn't significant or important anymore.",
+
+            "Wear Your Heart On Your Sleeve: To openly and freely express your emotions.",
+
+            "When It Rains, It Pours: Since it rarely rains, when it does it will be a huge storm.",
+
+            "Wine and Dine: When somebody is treated to an expensive meal.",
+
+            "Without A Doubt: For certain.",
+
+            "X marks the spot: A phrase that is said when someone finds something he/she has been looking for.",
+
+            "You Are What You Eat: In order to stay healthy you must eat healthy foods",
+
+            "You Can't Judge A Book By Its Cover: Decisions shouldn't be made primarily on appearance.",
+
+            "You Can't Take it With You: Enjoy what you have and not what you don't have, since when you die you cannot take things (such as money) with you.",
+
+            "Your Guess Is As Good As Mine: I have no idea.",
+
+            "Zero Tolerance: No crime or law breaking big or small will be overlooked",
+
+        ]
+
+
+
+        const homo = [
+
+            "accept - take in",
+
+            "except - other than",
+
+            "ad - advertisement",
+
+            "add - join, combine",
+
+            "advice - guidance",
+
+            "advise - recommend",
+
+            "aid - assist, assistance",
+
+            "aide - one who gives assistance",
+
+            "ail - to suffer poor health",
+
+            "ale - a beverage",
+
+            "air - atmosphere",
+
+            "ere - before",
+
+            "heir - one who inherits property",
+
+            "aisle - a passage",
+
+            "I'll - contraction of I will",
+
+            "isle - island",
+
+            "allusion - an indirect reference",
+
+            "illusion - false appearance",
+
+            "altar - table in a church",
+
+            "alter - to change",
+
+            "ate - past tense of eat",
+
+            "eight - the number 8",
+
+            "bail - to clear water",
+
+            "bail - release of a prisoner",
+
+            "bale - a large bundle",
+
+            "band - a ring, something that binds",
+
+            "band - a group",
+
+            "banned - prohibited",
+
+            "bare - uncovered",
+
+            "bear - large animal",
+
+            "bear - support, yield",
+
+            "bases - starting points",
+
+            "bases - four stations on a baseball field",
+
+            "basis - a basic principle",
+
+            "beat - to strike, overcome",
+
+            "beat - exhausted",
+
+            "beet - a plant with red roots",
+
+            "blew - past tense of blow",
+
+            "blue - the color",
+
+            "bread - baked food item",
+
+            "bred - produced",
+
+            "buy - purchase",
+
+            "by - near, through",
+
+            "bye - goodbye",
+
+            "capital - punishable by death",
+
+            "capital - chief city",
+
+            "capitol - building where legislatur meets",
+
+            "ceiling - top of a room",
+
+            "sealing - setting, fastening",
+
+            "cell - compartment",
+
+            "sell - vend",
+
+            "cent - penny coin",
+
+            "scent - an odor",
+
+            "sent - past tense of send",
+
+            "cereal - breakfast food",
+
+            "serial - sequential",
+
+            "chews - gnaws with teeth",
+
+            "choose - to select",
+
+            "Chile- country in South America",
+
+            "chili - bean stew",
+
+            "chilly - frosty",
+
+            "chord - musical tone",
+
+            "cord - rope",
+
+            "cite - quote",
+
+            "site - location",
+
+            "sight - view",
+
+            "close - opposite of open",
+
+            "clothes - clothing",
+
+            "coarse - rough",
+
+            "course - path, procedure",
+
+            "complement â€“ enhance; go together",
+
+            "compliment - praise",
+
+            "conduct - behavior",
+
+            "conduct - to lead",
+
+            "council - committee",
+
+            "counsel - guidance",
+
+            "creak - squeak",
+
+            "creek - stream of water",
+
+            "crews - gangs",
+
+            "cruise - ride on a boat",
+
+            "days - plural of day",
+
+            "daze - stun",
+
+            "dear - darling",
+
+            "deer- woodland animal",
+
+            "desert - to abandon",
+
+            "desert - dry land",
+
+            "dessert - after-dinner treat",
+
+            "dew - morning mist",
+
+            "do - operate",
+
+            "due - payable",
+
+            "die - cease to exist",
+
+            "dye - color",
+
+            "discreet - tactful",
+
+            "discrete - distinct",
+
+            "doe - female deer",
+
+            "dough - uncooked bread",
+
+            "dual - double",
+
+            "duel - battle",
+
+            "elicit - draw out",
+
+            "illicit - illegal",
+
+            "eminent - distinguished",
+
+            "imminent - soon",
+
+            "ewe - female sheep",
+
+            "you - second-person personal pronoun",
+
+            "eye - sight organ",
+
+            "I - first-person personal pronoun",
+
+            "facts - true things",
+
+            "fax - a document transmitted via telephone",
+
+            "fair - equal",
+
+            "fare - price",
+
+            "fairy - elflike creature with wings",
+
+            "ferry - boat",
+
+            "faze - impact",
+
+            "phase - stage",
+
+            "feat - achievement",
+
+            "feet - plural of foot",
+
+            "find - to discover",
+
+            "fined - charged a penalty",
+
+            "fir - type of tree",
+
+            "fur - animal hair",
+
+            "flea - small biting insect",
+
+            "flee - run",
+
+            "flew - did fly",
+
+            "flu - illness",
+
+            "flour - powdery, ground up grain",
+
+            "flower - blooming plant",
+
+            "for - on behalf of",
+
+            "fore - front",
+
+            "four - three plus one",
+
+            "forth - onward",
+
+            "fourth - number four",
+
+            "foreword - introduction to a book",
+
+            "forward - advancing",
+
+            "gene - a chromosome",
+
+            "jean - fabric; pants",
+
+            "gorilla - big ape",
+
+            "guerrilla - warrior",
+
+            "grease - fat",
+
+            "Greece - country in Europe",
+
+            "groan - moan",
+
+            "grown - form of grow",
+
+            "hair - head covering",
+
+            "hare - rabbit-like animal",
+
+            "hall - passageway",
+
+            "haul - tow",
+
+            "halve - cut in two parts",
+
+            "have - possess",
+
+            "hay - animal food",
+
+            "hey - interjection to get attention",
+
+            "heal - mend",
+
+            "heel - back of foot",
+
+            "hear - to listen",
+
+            "here - at this place",
+
+            "hi - hello",
+
+            "high - up far",
+
+            "hoarse - croaky",
+
+            "horse - riding animal",
+
+            "hole - opening",
+
+            "whole - entire",
+
+            "holey - full of holes",
+
+            "holy - divine",
+
+            "wholly - entirely",
+
+            "hoarse - rough voice",
+
+            "horse - animal",
+
+            "hour - sixty minutes",
+
+            "our - belonging to us",
+
+            "knead - massage",
+
+            "need - desire",
+
+            "knew - did know",
+
+            "new - not old",
+
+            "knight - feudal horseman",
+
+            "night - evening",
+
+            "knot - tied rope",
+
+            "not - negative",
+
+            "know - have knowledge",
+
+            "no - opposite of yes",
+
+            "lead - metal",
+
+            "led - was the leader",
+
+            "leased - past tense of lease",
+
+            "least - the minimum",
+
+            "lessen - make smaller",
+
+            "lesson - class",
+
+            "loan - lend",
+
+            "lone - solitary",
+
+            "made - did make",
+
+            "maid - servant",
+
+            "mail - postage",
+
+            "male - opposite of female",
+
+            "marry - to wed material",
+
+            "merry - very happy materiel",
+
+            "meat - animal protein",
+
+            "meet - encounter",
+
+            "mince - to chop finely",
+
+            "mints - type of sweet",
+
+            "morning - a.m.",
+
+            "mourning - remember the dead",
+
+            "none - not any",
+
+            "nun - woman who takes special vows",
+
+            "oar - boat paddle",
+
+            "or - otherwise",
+
+            "ore - mineral",
+
+            "oh - expression of surprise or	awe",
+
+            "owe - be obligated",
+
+            "one - single",
+
+            "won - did win",
+
+            "overdo - do too much",
+
+            "overdue - past due date",
+
+            "pail - bucket",
+
+            "pale - not bright",
+
+            "pain - hurt",
+
+            "pane - window glass",
+
+            "peace - calm",
+
+            "piece - segment",
+
+            "peak - highest point",
+
+            "peek - glance",
+
+            "patience - being willing to wait",
+
+            "patients - person treated in a hospital or by a doctor 	",
+
+            "pear - a type of fruit",
+
+            "pair - two (usually matching)",
+
+            "plain - ordinary",
+
+            "plane - flight machine plane; flat surface",
+
+            "pole - post",
+
+            "poll - survey",
+
+            "poor - not rich",
+
+            "pour - make flow",
+
+            "pray - implore God",
+
+            "prey - quarry",
+
+            "principal - most important",
+
+            "principle - belief",
+
+            "rain - water from sky",
+
+            "rein - bridle",
+
+            "rap - tap",
+
+            "wrap - drape around",
+
+            "read - past tense of the verb to read",
+
+            "red - color",
+
+            "real - factual",
+
+            "reel - roll",
+
+            "right - correct; not left",
+
+            "write - scribble",
+
+            "ring - encircle",
+
+            "wring - squeeze",
+
+            "road - street",
+
+            "rode - past tense of ride",
+
+            "role - function",
+
+            "roll - rotate",
+
+            "rose - flower",
+
+            "rows - lines",
+
+            "sail - move by wind power",
+
+            "sale - bargain price",
+
+            "scene - landscape",
+
+            "seen - viewed",
+
+            "sea - ocean segment",
+
+            "see - observe with eyes",
+
+            "seam - joining edge",
+
+            "seem - appear",
+
+            "sew - connect with thread",
+
+            "so - as a result",
+
+            "sow - plant",
+
+            "soar - ascend",
+
+            "sore - hurt place",
+
+            "sole - single",
+
+            "soul - essence",
+
+            "son - male child",
+
+            "sun - the star that lights the solar system",
+
+            "some - a few",
+
+            "sum - amount",
+
+            "stair - step",
+
+            "stare - to look at steadily",
+
+            "steal - swipe",
+
+            "steel - alloy",
+
+            "suite - large room in a hotel",
+
+            "sweet - the opposite of sour",
+
+            "tail - animalâ€™s appendage",
+
+            "tale - story",
+
+            "their - belonging to them",
+
+            "there - at that place",
+
+            "they're - they are",
+
+            "threw - past tense of throw",
+
+            "through - passing from one place to another",
+
+            "to - toward",
+
+            "too - also",
+
+            "two - the number 2",
+
+            "toe - foot appendage",
+
+            "tow - pull along",
+
+            "vary - differ",
+
+            "very - wail - howl",
+
+            "wail - howl",
+
+            "whale - huge sea mammal",
+
+            "waist - area below ribs",
+
+            "waste - squander",
+
+            "wait - kill time",
+
+            "weight - measurable load",
+
+            "war - battle",
+
+            "wore - did wear",
+
+            "warn - caution",
+
+            "worn - used",
+
+            "way - path",
+
+            "weigh - measure mass",
+
+            "we - us",
+
+            "wee - tiny",
+
+            "weak - not strong",
+
+            "week - seven days",
+
+            "wear - to don attire",
+
+            "where - question word",
+
+            "weather - climate",
+
+            "whether - if",
+
+            "which - that",
+
+            "witch - sorcerer",
+
+            "wood - material coming from trees",
+
+            "would - conditional auxiliary",
+
+            "your - belonging to you",
+
+            "you're - you are",
+
+        ]
+
+
+
+        const word1 = [
+
+            "An act of abdicating or renouncing the throne - Abdication",
+
+            "An annual calendar containing important dates and statistical information such as astronomical data and tide tables - Almanac",
+
+            "A cold-blooded vertebrate animal that is born in water and breathes with gills - Amphibian",
+
+            "A story, poem, or picture that can be interpreted to reveal a hidden meaning, typically a moral or political one - Allegory",
+
+            "A statement or proposition on which an abstractly defined structure is based - Axiom",
+
+            "A nation or person engaged in war or conflict, as recognized by international law - Belligerent",
+
+            "An examination of tissue removed from a living body to discover the presence, cause, or extent of a disease - Biopsy",
+
+            "The action or offence of speaking sacrilegiously about God or sacred things; profane talk - Blasphemy",
+
+            "The arrangement of events or dates in the order of their occurrence - Chronology",
+
+            "A vigorous campaign for political, social, or religious change - Crusade",
+
+            "Lasting for a very short time - Ephemeral",
+
+            "Spoken or done without preparation - Extempore",
+
+            "Release someone from a duty or obligation - Exonerate",
+
+            "Fond of company - Gregarious",
+
+            "Making marks that cannot be removed - Indelible",
+
+            "Incapable of making mistakes or being wrong - Infallible",
+
+            "Certain to happen - Inevitable",
+
+            "A sentimental longing or wistful affection for a period in the past - Nostalgia",
+
+            "A solution or remedy for all difficulties or diseases - Panacea",
+
+            "A doctrine which identifies God with the universe - Pantheism",
+
+            "Excessively concerned with minor details or rules - Pedantic",
+
+            "The practice of taking someone else's work or ideas and passing them off as one's own - Plagiarism",
+
+            "Safe to drink - Potable",
+
+            "The emblems or insignia of royalty - Regalia",
+
+            "Violation or misuse of what is regarded as sacred - Sacrilege",
+
+            "A position requiring little or no work but giving the holder status or financial benefit - Sinecure",
+
+            "A thing that is kept as a reminder of a person, place, or event - Souvenir",
+
+            "An imaginary ideal society free of poverty and suffering - Utopia",
+
+            "Denoting a sin that is not regarded as depriving the soul of divine grace - Venial",
+
+            "In exactly the same words as were used originally - Verbatim",
+
+            "A state of disorder due to absence or non-recognition of authority or other controlling systems - Anarchy",
+
+            "A form of government in which power is held by the nobility - Aristocracy",
+
+            "A system of government by one person with absolute power - Autocracy",
+
+            "A self-governing country or region - Autonomy",
+
+            "A system of government in which most of the important decisions are taken by state officials rather than by elected representatives - Bureaucracy",
+
+            "A system of government by the whole population or all the eligible members of a state, typically through elected representatives - Democracy",
+
+            "A state, society, or group governed by old people - Gerontocracy",
+
+            "A state or country run by the worst, least qualified, or most unscrupulous citizens - Kakistocracy",
+
+            "Government by new or inexperienced hands - Neocracy",
+
+            "Government by the populace - Ochlocracy",
+
+            "A small group of people having control of a country or organization - Oligarchy",
+
+            "Government by the wealthy - Plutocracy",
+
+            "Government not connected with religious or spiritual matters - 	Secular ",
+
+            "A form of government with a monarch at the head - 	Monarchy ",
+
+            "A political system based on government of men by God - 	Thearchy ",
+
+            "A collection of historical documents or records providing information about a place, institution, or group of people - 	Archives ",
+
+            "A large cage, building, or enclosure for keeping birds in - 	Aviary ",
+
+            "A building where animals are butchered - 	Abattoir ",
+
+            "A place where bees are kept; a collection of beehives - 	Apiary ",
+
+            "A building containing tanks of live fish of different species - 	Aquarium ",
+
+            "A place or scene of activity, debate, or conflict - 	Arena ",
+
+            "A collection of weapons and military equipment - 	Arsenal ",
+
+            "An institution for the care of people who are mentally ill - 	Asylum ",
+
+            "A hole or tunnel dug by a small animal, especially a rabbit, as a dwelling - 	Burrow ",
+
+            "A collection of items of the same type stored in a hidden or inaccessible place - 	Cache ",
+
+            "A public room or building where gambling games are played - 	Casino ",
+
+            "A large burial ground, especially one not in a churchyard - 	Cemetery ",
+
+            "A room in a public building where outdoor clothes or luggage may be left - 	Cloakroom ",
+
+            "A place where a dead person's body is cremated - 	Crematorium ",
+
+            "a Christian community of nuns living together under monastic vows - 	Convent ",
+
+            "Nursery where babies and young children are cared for during the working day - 	Creche ",
+
+            "A stoppered glass container into which wine or spirit is decanted - 	Decanter ",
+
+            "A large bedroom for a number of people in a school or institution - 	Dormitory ",
+
+            "The nest of a squirrel, typically in the form of a mass of twigs in a tree - 	Drey ",
+
+            "A room or building equipped for gymnastics, games, and other physical exercise - 	Gymnasium ",
+
+            "A storehouse for threshed grain - 	Granary ",
+
+            "A large building with an extensive floor area, typically for housing aircraft. - 	Hangar ",
+
+            "A box or cage, typically with a wire mesh front, for rabbits or other small domesticated animals - keeping	Hutch ",
+
+            "A place in a large institution for the care of those who are ill - 	Infirmary ",
+
+            "A small shelter for a dog - 	Kennel ",
+
+            "A place where wild animal live - 	Lair ",
+
+            "A place where coins, medals, or tokens are	made - Mint ",
+
+            "A collection of wild animals kept in captivity for exhibition - 	Menagerie ",
+
+            "A building or buildings occupied by a community of monks living under religious vows - 	Monastery ",
+
+            "A place where bodies are kept for	identification - Morgue ",
+
+            "A piece of enclosed land planted with fruit trees - 	Orchard ",
+
+            "A large natural or artificial lake used as a source of water supply - 	Reservoir ",
+
+            "A small kitchen or room at the back of a house used for washing dishes and another dirty household work - 	Scullery ",
+
+            "A close-fitting cover for the blade of a knife or sword - 	Sheath ",
+
+            "A room or building for sick children in a boarding school - 	Sanatorium ",
+
+            "A place where animal hides are tanned - 	Tannery ",
+
+            "A large, tall cupboard in which clothes may be	hung or stored - Wardrobe ",
+
+            "A group of guns or missile launchers operated together at one place - 	Battery ",
+
+            "A large bundle bound for storage or transport - 	Bale ",
+
+            "A large gathering of people of a particular type - 	Bevy ",
+
+            "An arrangement of flowers that is usually given as a present - 	Bouquet ",
+
+            "A family of young animals - 	Brood ",
+
+            "A group of things that have been hidden in a secret place - 	Cache ",
+
+            "A group of people, typically with vehicles or animals travelling together - Caravan",
+
+            "A closed political meeting - Caucus",
+
+            "An exclusive circle of people with a common purpose - Clique",
+
+            "A group of followers hired to applaud at a performance - Claque",
+
+            "A series of stars - Constellation",
+
+            "A funeral procession - Cortege",
+
+            "A group of worshippers - Congregation",
+
+            "A herd or flock of animals being driven in a body - Drove",
+
+            "A small fleet of ships or boats - Flotilla",
+
+            "A small growth of trees without underbrush - Grove",
+
+            "A community of people smaller than a village - Hamlet",
+
+            "A group of cattle or sheep or other domestic mammals - Herd",
+
+            "A large group of people - Horde",
+
+            "A temporary police force - Posse",
+
+            "A large number of fish swimming together - Shoal",
+
+            "A strong and fast-moving stream of water or other liquid - Torrent",
+
+            "One who is not sure about God's existence - Agnostic",
+
+            "A person who deliberately sets fire to a building - 	Arsonist ",
+
+            "One who does a thing for pleasure and not as a profession - 	Amateur ",
+
+            "One who can use either hand with ease - 	Ambidextrous ",
+
+            "One who makes an official examination of accounts - 	Auditor ",
+
+            "A person who believes in or tries to bring about a state of lawlessness - 	Anarchist ",
+
+            "A person who has changed his faith - 	Apostate ",
+
+            "One who does not believe in the existence of God - 	Atheist ",
+
+            "A person appointed by two parties to solve a dispute - 	Arbitrator ",
+
+            "One who leads an austere life - 	Ascetic ",
+
+            "One who does a thing for pleasure and not as a	profession - Amateur ",
+
+            "One who can either hand with ease - 	Ambidextrous ",
+
+            "An unconventional style of living - 	Bohemian ",
+
+            "One who is bad in spellings - 	Cacographer ",
+
+            "One who feeds on human flesh - 	Cannibal ",
+
+            "A person who is blindly devoted to an idea/ A person aggressive or exaggerated patriotism - displaying	Chauvinist ",
+
+            "A critical judge of any art and craft - 	Connoisseur ",
+
+            "Persons living at the same time - Contemporaries",
+
+            "One who is recovering health after illness - Convalescent",
+
+            "A girl/woman who flirts with man - Coquette",
+
+            "A person who regards the whole world as his country - Cosmopolitan",
+
+            "One who is a centre of attraction - Cynosure",
+
+            "One who sneers at the beliefs of others - Cynic",
+
+            "A leader or orator who espoused the cause of the common people - Demagogue",
+
+            "A person having a sophisticated charm - Debonair",
+
+            "A leader who sways his followers by his oratory - Demagogue",
+
+            "A dabbler (not serious) in art, science and literature - Dilettante",
+
+            "One who is for pleasure of eating and drinking - Epicure",
+
+            "One who often talks of his achievements - Egotist",
+
+            "Someone who leaves one country to settle in another - Emigrant",
+
+            "A man who is womanish in his habits - Effeminate",
+
+            "One hard to please (very selective in his habits) - Fastidious",
+
+            "One who runs away from justice - Fugitive",
+
+            "One who is filled with excessive enthusiasm in religious matters - Fanatic",
+
+            "One who believes in fate - Fatalist",
+
+            "A lover of good food - Gourmand",
+
+            "Conferred as an honour - Honorary",
+
+            "A person who acts against religion - Heretic",
+
+            "A person of intellectual or erudite tastes - Highbrow",
+
+            "A patient with imaginary symptoms and ailments - Hypochondriac",
+
+            "A person who is controlled by wife - Henpeck",
+
+            "One who shows sustained enthusiastic action with unflagging vitality - Indefatigable",
+
+            "Someone who attacks cherished ideas or traditional institutions - Iconoclast",
+
+            "One who does not express himself freely - Introvert",
+
+            "Who behaves without moral principles - Immoral",
+
+            "A person who is incapable of being tampered with - Impregnable",
+
+            "One who is unable to pay his debts - Insolvent",
+
+            "A person who is mentally ill - Lunatic",
+
+            "A person who dislikes humankind and avoids human society - Misanthrope",
+
+            "A person who primarily concerned with making money at the expense of ethics - Mercenary",
+
+            "Someone in love with himself - Narcissist",
+
+            "One who collect coins as hobby - Numismatist",
+
+            "A person who likes or admires women - Philogynist",
+
+            "A lover of mankind - Philanthropist",
+
+            "A person who speaks more than one language - Polyglot",
+
+            "One who lives in solitude - Recluse",
+
+            "Someone who walks in sleep - Somnambulist",
+
+            "A person who is indifferent to the pains and pleasures of life - Stoic",
+
+            "A scolding nagging bad-tempered woman - Termagant",
+
+            "A person who shows a great or excessive fondness for one's wife - Uxorious",
+
+            "One who possesses outstanding technical ability in a particular art or field - Virtuoso",
+
+            "A solemn procession, especially for a funeral - Cortege",
+
+            "A poem of serious reflection, typically a lament for the dead - Elegy",
+
+            "A phrase or form of words written in memory of a person who has died - Epitaph",
+
+            "Killing of one's son or daughter - Filicide",
+
+            "Destruction or abortion of a fetus - Foeticide",
+
+            "Killing of one's brother or sister - Fratricide",
+
+            "Killing of a large group of people - Genocide",
+
+            "Killing of one person by another - Homicide",
+
+            "Killing of infants - Infanticide",
+
+            "Burial of a corpse in a grave or tomb - Interment",
+
+            "Killing of one's mother - Matricide",
+
+            "A room or building in which dead bodies are kept - Mortuary",
+
+            "A news article that reports the recent death of a person - Obituary",
+
+            "Killing of a parent or other near relative - Parricide",
+
+            "Killing of one's father - Patricide",
+
+            "An examination of a dead body to determine the cause of death - Postmortem",
+
+            "Action of killing a king - Regicide",
+
+            "Killing of one's sister - Sororicide",
+
+            "Act of intentionally causing one's own death - Suicide",
+
+            "Killing of one's wife - Uxoricide",
+
+            "One Word Substitution - Profession/Research",
+
+            "The medieval forerunner of chemistry - Alchemy",
+
+            "A person who presents a radio/television programme - Anchor",
+
+            "One who studies the evolution of mankind - Anthropologist",
+
+            "A person who is trained to travel in a spacecraft - Astronaut",
+
+            "The scientific study of the physiology, structure, genetics, ecology, distribution, classification, and economic importance of plants - Botany",
+
+            "A person who draws or produces maps - Cartographer",
+
+            "A person who writes beautiful writing - Calligrapher",
+
+            "A person who composes the sequence of steps and moves for a performance of dance - Choreographer",
+
+            "A person employed to drive a private or hired car - Chauffeur",
+
+            "A person who introduces the performers or contestants in a variety show - Compere",
+
+            "A keeper or custodian of a museum or other collection - Curator",
+
+            "The branch of biology concerned with cyclical physiological phenomena - Chronobiology",
+
+            "A secret or disguised way of writing - Cipher",
+
+            "The study of statistics - Demography",
+
+            "The use of the fingers and hands to ideas communicate and convey	Dactylology",
+
+            "A person who sells and arranges cut flowers - Florist",
+
+            "A line of descent traced continuously from an ancestor - Genealogy",
+
+            "The therapeutic use of sunlight - Heliotherapy",
+
+            "The art or practice of garden cultivation and management - Horticulture",
+
+            "One who supervises in the examination hall - Invigilator",
+
+            "The theory or philosophy of law - Jurisprudence",
+
+            "A person who compiles dictionaries - Lexicographer",
+
+            "The scientific study of the structure and diseases of teeth - Odontology",
+
+            "One who presents a radio programme - Radio Jockey",
+
+            "The art of effective or persuasive speaking or writing - Rhetoric",
+
+            "The branch of science concerned with the origin, structure, and composition of rocks - Petrology",
+
+            "One who study the elections and trends in voting - Psephologist",
+
+            "An artist who makes sculptures. - Sculptor",
+
+            "The scientific study of the behaviour, structure, physiology, classification, and distribution of animals - Zoology",
+
+            "The branch of physics concerned with the properties of sound - Acoustics",
+
+            "The sound of Alligators - Bellow",
+
+            "The sound of Deers - Bell",
+
+            "The sound of Crows - Caw",
+
+            "The sound of Geese - Cackle",
+
+            "The sound of Hens - Cluck",
+
+            "The sound of Dolphins - Click",
+
+            "The sound of Frogs - Croak",
+
+            "The sound of Crickets - Creak",
+
+            "The sound of Monkeys - Gibber",
+
+            "The sound of Camels - Grunt",
+
+            "The sound of Owls - Hoot",
+
+            "The sound of Penguins - Honk",
+
+            "The sound of Cattle - Moo",
+
+            "The sound of Horses - Neigh",
+
+            "The sound of Nightingales - Pipe",
+
+            "The sound of Ducks - Quack",
+
+            "The sound of Parrots - Screech",
+
+            "The sound of Rats - Squeak",
+
+            "The sound of Birds - Twitter",
+
+            "The sound of Elephants - Trumpet",
+
+            "The sound of Mosquitoes - Whine",
+
+        ]
+
+        
+        const rootw = [
+            "meter/metr	| measure	| thermometer, perimeter",
+            "tele	| far off	| television, telephone",
+            "psycho	| soul; spirit	| psychology, psychic",
+            "therm	| heat	| thermal, thermometer",
+            "techno	| art; science; skill	| technique, technological",
+            "pseudo	| not genuine, false	| pseudonym, pseudoscience",
+            "morph	| form; shape	| morphology, morphing",
+            "photo/phos	| light	| photograph, phosphorous",
+            "phon	| sound	| phone, symphony",
+            "hydr	| water	| hydration, dehydrate",
+            "mono	| one	| monologue, monotonous",
+            "mis/miso	| hate	| misanthrope, misogyny",
+            "micro	| small	| microbe, microscope",
+            "hetero	| different	| heteronym, heterogeneous",
+            "scope	| viewing instrument	| microscope, telescope",
+            "hypo	| below; beneath	| hypothermia, hypothetical",
+            "homo	| same	| homonym, homogenous",
+            "chron	| time	| chronological, chronic",
+            "gram	| thing written	| epigram, telegram",
+            "auto	| self	| autobiography, automobile",
+            "dyna	| power	| dynamic, dynamite",
+            "bio	| life	| biology, biography",
+            "dys	| bad; hard; unlucky	| dysfunctional, dyslexic",
+            "phobia	| fear	| claustrophobia, phobic",
+            "logy	| study of	| biology, psychology",
+            "graph	| writing	| graphic, phonograph",
+            "nym	| name	| antonym, synonym",
+            "anthropo	| man; human; humanity	| anthropologist, philanthropy",
+            "aqua	| water	| aquarium, aquamarine",
+            "bene	| good	| benefactor, benevolent",
+            "circum	| around	| circumference, circumstance",
+            "duc/duct	| to lead	| conduct, induce",
+            "cent	| one hundred	| century, percent",
+            "mal	| bad	| malevolent, malefactor",
+            "mater	| mother	| material, maternity",
+            "form	| shape	| conform, reform",
+            "ambi	| both	| ambiguous, ambidextrous",
+            "dict	| to say	| dictation, dictator",
+            "mit	| to send	| transmit, admit",
+            "fort	| strength	| fortitude, fortress",
+            "fract	| to break	| fracture, fraction",
+            "struct	| to build	| destruction, restructure",
+            "scrib/scribe	| to write	| inscription, prescribe",
+            "ject	| throw	| projection, rejection",
+            "multi	| many	| multimedia, multiple",
+            "fac	| to do; to make	| factory, manufacture",
+            "aud	| to hear	| audience, audition",
+            "sect/sec	| to cut	| bisect, section",
+            "jud	| judge	| judicial, prejudice",
+            "mort	| death	| mortal, mortician",
+            "pater	| father	| paternal, paternity",
+            "port	| to carry	| portable, transportation",
+            "contra/counter	| against	| contradict, encounter",
+            "rupt	| to break	| bankrupt, disruption",
+            "voc	| voice; to call	| vocalize, advocate",
+            "spect	| to look	| inspection, spectator",
+            "vid/vis	| to see	| video, televise",
+            "sent	| to feel; to send	| consent, resent",
+        ]
+
+
+
+
+        const autoCompleteSyn = new autoComplete({
+
+            data: {
+
+                src: synonym,
+
+            },
+
+            placeHolder: "Word Synonym Antonym",
+
+            selector: "#synonym",
+
+            resultsList: {
+
+                tag: "ul",
+
+                id: "",
+
+                class: "results_list",
+
+                destination: "#result",
+
+                position: "afterend",
+
+                maxResults: 10,
+
+                noResults: true,
+
+                element: (list, data) => {
+
+                    list.setAttribute("data-parent", "xcs-pdp-list");
+
+                },
+
+            },
+
+            resultItem: {
+
+                element: (item, data) => {
+
+                    // Modify Results Item Style
+
+                    item.style = "display: flex; justify-content: space-between;";
+
+                    // Modify Results Item Content
+
+                    item.innerHTML = `
+
+      <span style="text-overflow: ellipsis;">
+
+        ${data.match}
+
+      </span>
+
+      `;
+
+                },
+
+                highlight: true
+
+            },
+
+        });
+
+
+
+
+
+        const autoCompleteIdioms = new autoComplete({
+
+            data: {
+
+                src: idioms,
+
+            },
+
+            selector: "#idioms",
+
+            placeHolder: "Idioms & Phrases",
+
+            resultsList: {
+
+                tag: "ul",
+
+                id: "",
+
+                class: "results_list",
+
+                destination: "#result",
+
+                position: "afterend",
+
+                maxResults: 10,
+
+                noResults: true,
+
+                element: (list, data) => {
+
+                    list.setAttribute("data-parent", "xcs-pdp-list");
+
+                },
+
+            },
+
+            resultItem: {
+
+                element: (item, data) => {
+
+                    // Modify Results Item Style
+
+                    item.style = "display: flex; justify-content: space-between;";
+
+                    // Modify Results Item Content
+
+                    item.innerHTML = `
+
+      <span style="text-overflow: ellipsis;">
+
+        ${data.match}
+
+      </span>
+
+      `;
+
+                },
+
+                highlight: true
+
+            },
+
+        });
+
+
+
+        const autoCompleteHomo = new autoComplete({
+
+            data: {
+
+                src: homo,
+
+            },
+
+            selector: "#homo",
+
+            placeHolder: "Homonymns Homophones Homographs",
+
+            resultsList: {
+
+                tag: "ul",
+
+                id: "",
+
+                class: "results_list",
+
+                destination: "#result",
+
+                position: "afterend",
+
+                maxResults: 10,
+
+                noResults: true,
+
+                element: (list, data) => {
+
+                    list.setAttribute("data-parent", "xcs-pdp-list");
+
+                },
+
+            },
+
+            resultItem: {
+
+                element: (item, data) => {
+
+                    // Modify Results Item Style
+
+                    item.style = "display: flex; justify-content: space-between;";
+
+                    // Modify Results Item Content
+
+                    item.innerHTML = `
+
+      <span style="text-overflow: ellipsis;">
+
+        ${data.match}
+
+      </span>
+
+      `;
+
+                },
+
+                highlight: true
+
+            },
+
+        });
+
+
+
+        const autoCompleteWord1 = new autoComplete({
+
+            data: {
+
+                src: word1,
+
+            },
+
+            selector: "#word",
+
+            placeHolder: "1 Word Substitution",
+
+            resultsList: {
+
+                tag: "ul",
+
+                id: "",
+
+                class: "results_list",
+
+                destination: "#result",
+
+                position: "afterend",
+
+                maxResults: 10,
+
+                noResults: true,
+
+                element: (list, data) => {
+
+                    list.setAttribute("data-parent", "xcs-pdp-list");
+
+                },
+
+            },
+
+            resultItem: {
+
+                element: (item, data) => {
+
+                    // Modify Results Item Style
+
+                    item.style = "display: flex; justify-content: space-between;";
+
+                    // Modify Results Item Content
+
+                    item.innerHTML = `
+
+      <span style="text-overflow: ellipsis;">
+
+        ${data.match}
+
+      </span>
+
+      `;
+
+                },
+
+                highlight: true
+
+            },
+
+        });
+
+        
+        const autoCompleteRootw = new autoComplete({
+
+            data: {
+
+                src: rootw,
+
+            },
+
+            selector: "#rootw",
+
+            placeHolder: "RootWord Meaning Example",
+
+            resultsList: {
+
+                tag: "ul",
+
+                id: "",
+
+                class: "results_list",
+
+                destination: "#result",
+
+                position: "afterend",
+
+                maxResults: 10,
+
+                noResults: true,
+
+                element: (list, data) => {
+
+                    list.setAttribute("data-parent", "xcs-pdp-list");
+
+                },
+
+            },
+
+            resultItem: {
+
+                element: (item, data) => {
+
+                    // Modify Results Item Style
+
+                    item.style = "display: flex; justify-content: space-between;";
+
+                    // Modify Results Item Content
+
+                    item.innerHTML = `
+
+      <span style="text-overflow: ellipsis;">
+
+        ${data.match}
+
+      </span>
+
+      `;
+
+                },
+
+                highlight: true
+
+            },
+
+        });
+
+        
+
+
+        function clearResult() {
+
+            res.innerHTML = ""
+
+            idSynonym.value = ""
+
+            idIdioms.value = ""
+
+            idHomo.value = ""
+
+            idWord.value = ""
+
+            idRootw.value = ""
+        }
+
+        function insResult(item) {
+
+            res.appendChild(item)
+
+        }
+
+
+
+        function myautocomplete(inp, arr) {
+
+            return 0;
+
+
+
+            /*the myautocomplete function takes two arguments,
+
+            the text field element and an array of possible myautocompleted values:*/
+
+            var currentFocus;
+
+            /*execute a function when someone writes in the text field:*/
+
+            inp.addEventListener("input", function (e) {
+
+                var a, b, i, val = this.value;
+
+                /*close any already open lists of myautocompleted values*/
+
+                // closeAllLists();
+
+                clearResult()
+
+                if (!val) { return false; }
+
+                currentFocus = -1;
+
+                /*create a DIV element that will contain the items (values):*/
+
+                a = document.createElement("DIV");
+
+                a.setAttribute("id", this.id + "myautocomplete-list");
+
+                a.setAttribute("class", "myautocomplete-items");
+
+                /*append the DIV element as a child of the myautocomplete container:*/
+
+                this.parentNode.appendChild(a);
+
+                /*for each item in the array...*/
+
+                for (i = 0; i < arr.length; i++) {
+
+                    /*check if the item starts with the same letters as the text field value:*/
+
+                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+
+                        /*create a DIV element for each matching element:*/
+
+                        b = document.createElement("DIV");
+
+                        /*make the matching letters bold:*/
+
+                        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+
+                        b.innerHTML += arr[i].substr(val.length);
+
+                        /*insert a input field that will hold the current array item's value:*/
+
+                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+
+                        /*execute a function when someone clicks on the item value (DIV element):*/
+
+                        b.addEventListener("click", function (e) {
+
+                            /*insert the value for the myautocomplete text field:*/
+
+                            inp.value = this.getElementsByTagName("input")[0].value;
+
+                            /*close the list of myautocompleted values,
+
+                            (or any other open lists of myautocompleted values:*/
+
+                            // closeAllLists();
+
+                            clearResult()
+
+                        });
+
+                        // a.appendChild(b);
+
+                        insResult(b)
+
+                    }
+
+                }
+
+            });
+
+            /*execute a function presses a key on the keyboard:*/
+
+            inp.addEventListener("keydown", function (e) {
+
+                var x = document.getElementById(this.id + "myautocomplete-list");
+
+                if (x) x = x.getElementsByTagName("div");
+
+                if (e.keyCode == 40) {
+
+                    /*If the arrow DOWN key is pressed,
+
+                    increase the currentFocus variable:*/
+
+                    currentFocus++;
+
+                    /*and and make the current item more visible:*/
+
+                    addActive(x);
+
+                } else if (e.keyCode == 38) { //up
+
+                    /*If the arrow UP key is pressed,
+
+                    decrease the currentFocus variable:*/
+
+                    currentFocus--;
+
+                    /*and and make the current item more visible:*/
+
+                    addActive(x);
+
+                } else if (e.keyCode == 13) {
+
+                    /*If the ENTER key is pressed, prevent the form from being submitted,*/
+
+                    e.preventDefault();
+
+                    if (currentFocus > -1) {
+
+                        /*and simulate a click on the "active" item:*/
+
+                        if (x) x[currentFocus].click();
+
+                    }
+
+                }
+
+            });
+
+            function addActive(x) {
+
+                /*a function to classify an item as "active":*/
+
+                if (!x) return false;
+
+                /*start by removing the "active" class on all items:*/
+
+                removeActive(x);
+
+                if (currentFocus >= x.length) currentFocus = 0;
+
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+
+                /*add class "myautocomplete-active":*/
+
+                x[currentFocus].classList.add("myautocomplete-active");
+
+            }
+
+            function removeActive(x) {
+
+                /*a function to remove the "active" class from all myautocomplete items:*/
+
+                for (var i = 0; i < x.length; i++) {
+
+                    x[i].classList.remove("myautocomplete-active");
+
+                }
+
+            }
+
+            function closeAllLists(elmnt) {
+
+                /*close all myautocomplete lists in the document,
+
+                except the one passed as an argument:*/
+
+                var x = document.getElementsByClassName("myautocomplete-items");
+
+                for (var i = 0; i < x.length; i++) {
+
+                    if (elmnt != x[i] && elmnt != inp) {
+
+                        x[i].parentNode.removeChild(x[i]);
+
+                    }
+
+                }
+
+            }
+
+            /*execute a function when someone clicks in the document:*/
+
+            document.addEventListener("click", function (e) {
+
+                closeAllLists(e.target);
+
+            });
+
+        }
+
+        myautocomplete(idSynonym, synonym);
+
+        myautocomplete(idIdioms, countries);
+
+        myautocomplete(idHomo, countries);
+
+        myautocomplete(idWord, countries);
+
+
+
+    </script>
+
+</body>
+
+
+
+</html>
